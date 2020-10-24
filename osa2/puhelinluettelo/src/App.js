@@ -57,6 +57,7 @@ const App = () => {
             number: newNumber
         }
 
+        // TÄMÄN TOIMIVUUS PITÄÄ VARMISTAA - FIKSAA ERROR.RESPONSE.DATA NÄKYVÄKSI, JONKA JÄLKEEN BUILDAA BÄKKIIN.
         if (persons.some(person => person.name === newName)) {
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
                 updatePerson(personObject)
@@ -70,6 +71,12 @@ const App = () => {
                     setTimeout(() => {
                         setSuccessMessage(null)
                     },5000)
+               })
+               .catch(error => {
+                   setErrorMessage(error.response.data.message)
+                   setTimeout(() => {
+                       setErrorMessage(null)
+                   }, 10000)
                })
         }
 
