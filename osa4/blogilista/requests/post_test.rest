@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Test",
-    "author": "Beni",
+    "title": "Basics of Node.js",
+    "author": "FS-Team",
     "url": "https://fullstackopen.com",
-    "likes": 1
+    "userId": "5fa869de06e5a828c085461b",
+    "likes": 250
 }
