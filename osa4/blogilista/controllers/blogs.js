@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { tokenExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog
@@ -76,7 +75,31 @@ blogsRouter.put('/:id', async (request, response) => {
     }
 })
 
+// Uusi versio:
+// - Poisto onnistuu ainoastaan jos blogin tekijä poistaa blogin
+// - Ei onnistu ilman tokenia
+// - Ei onnistu väärän käyttäjän toimesta
+//   * Palauttaa asiallisen statuskoodin (Unauthorized)
 blogsRouter.delete('/:id', async (request, response) => {
+    const body = request.body
+
+    // Session tokeni
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    // Kyseessäoleva blogi
+    const blog = await Blog.findById(request.params.id)
+
+    // Poistoa yrittävä käyttäjä
+    const activeUser = await User.findById(body.userId)
+
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    if (blog.user._id.toString() !== activeUser._id.toString()) {
+        return response.status(401).json({ error: 'unauthorized user' })
+    }
+    
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
 })
