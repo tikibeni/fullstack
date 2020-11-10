@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRpa2liZW5pIiwiaWQiOiI1ZmE4Njc5NDA2ZTVhODI4YzA4NTQ2MWEiLCJpYXQiOjE2MDUwMTIzOTR9.7mVmQaoL-xk1h4GSmGemWD8dwznZrw-XAIoThFKgp2I
 
 {
-    "title": "Basics of Node.js",
+    "title": "Testing middleware.",
     "author": "FS-Team",
     "url": "https://fullstackopen.com",
     "userId": "5fa869de06e5a828c085461b",
-    "likes": 250
+    "likes": 500
 }

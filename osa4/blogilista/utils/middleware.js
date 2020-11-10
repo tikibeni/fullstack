@@ -8,13 +8,26 @@ const requestLogger = (request, response, next) => {
     next()
 }
 
+// Token-Extract MW:
+// - Ottaa tokenin Authorization-headerista
+// - Sijoittaa tokenin request-olion kenttään token
+// -> Tokeniin pääsee jatkossa käsiksi komennolla 'request.token'
+const tokenExtractor = (request, response, next) => {
+    const auth = request.get('Authorization')
+
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+        request.token = auth.substring(7)
+    }
+
+    // Jos tätä next-kutsua ei ole, softa lukkiutuu kokonaan.
+    next()
+}
+
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 
 const errorHandler = (error, request, response, next) => {
-    logger.error(error.message)
-
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
@@ -23,11 +36,14 @@ const errorHandler = (error, request, response, next) => {
         return response.status(401).json({ error: 'invalid token' })
     }
 
+    logger.error(error.message)
+
     next(error)
 }
 
 module.exports = {
     requestLogger,
     unknownEndpoint,
-    errorHandler
+    errorHandler,
+    tokenExtractor
 }
