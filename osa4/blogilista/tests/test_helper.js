@@ -1,17 +1,18 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+// Nämä pitäisi muuttaa uuteen versioon, jotta deleten testaus toimii.
 const initialBlogs = [
     {
+        url: 'Nope',
         title: '100 ways to utilize the course Lama',
         author: 'Non-existent',
-        url: 'Nope',
         likes: 0
     },
     {
+        url: 'https://fullstackopen.com',
         title: 'Full-Stack Development 101',
         author: 'FS-Team',
-        url: 'https://fullstackopen.com',
         likes: 10000
     },
 ]
@@ -25,7 +26,7 @@ const nonExistingId = async () => {
 }
 
 const blogsInDatabase = async () => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1})
     return blogs.map(blog => blog.toJSON())
 }
 

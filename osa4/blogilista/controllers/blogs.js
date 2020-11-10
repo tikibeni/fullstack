@@ -53,6 +53,7 @@ blogsRouter.post('/', async (request, response) => {
     }
 })
 
+// Tähän pitäisi päivittää token/user vaativuudet
 blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
 

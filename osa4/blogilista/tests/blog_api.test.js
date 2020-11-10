@@ -4,9 +4,28 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const jwt = require('jsonwebtoken')
 
+// HUOM! ÄLÄ KOVAKOODAA TÄNNE USERID:TÄ TAI BLOGIEN ID:TÄ - vaihtuvat usein ja johtavat status code 500 jos olet tyhmä t. 3h bugfixailua
 describe('Routetesting', () => {
+    let token = null
+    let decodedToken = null
+
+    // Järjestelmän alustus blogien testaamista varten
     beforeEach(async () => {
+        // Tokenin hakeminen kirjautumisen kautta
+        const response = await api
+          .post('/api/login')
+          .send({
+              username: 'testUser',
+              password: 'secret'
+          })
+
+        token = response.body.token
+
+        decodedToken = jwt.verify(token, process.env.SECRET)
+
+        // Blogikannan alustus
         await Blog.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
     })
@@ -68,16 +87,18 @@ describe('Routetesting', () => {
     })
 
     describe('POST-Method', () => {
-        test('valid blog can be added', async () => {
+        test('blog can be added with valid pieces of info', async () => {
             const newBlog = {
                 title: 'Node Testing 101',
                 author: 'FS-Team',
+                userId: decodedToken.id,
                 url: 'https://fullstackopen.com',
                 likes: 5000
             }
         
             await api
               .post('/api/blogs')
+              .set('Authorization', `bearer ${token}`)
               .send(newBlog)
               .expect(200)
               .expect('Content-Type', /application\/json/)
@@ -86,7 +107,6 @@ describe('Routetesting', () => {
             expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
         
             const titles = blogsAtEnd.map(r => r.title)
-        
             expect(titles).toContain(
                 'Node Testing 101'
             )
@@ -96,11 +116,13 @@ describe('Routetesting', () => {
             const newBlog = {
                 title: 'TTK91',
                 author: 'Tito',
+                userId: decodedToken.id,
                 url: 'Nope'
             }
         
             await api
               .post('/api/blogs')
+              .set('Authorization', `bearer ${token}`)
               .send(newBlog)
               .expect(200)
               .expect('Content-Type', /application\/json/)
@@ -114,26 +136,48 @@ describe('Routetesting', () => {
         
         test('blog post without defined title and url returns error 400', async () => {
             const newBlog = {
-                author: 'Mr. Error'
+                author: 'Mr. Error',
+                userId: decodedToken.id
             }
         
             await api
               .post('/api/blogs')
+              .set('Authorization', `bearer ${token}`)
               .send(newBlog)
               .expect(400)
         
             const blogsAtEnd = await helper.blogsInDatabase()
             expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
         })
+
+        test('blog post returns 401 if token not found', async () => {
+            const newBlog = {
+                title: 'TTK91',
+                author: 'Mr. Error',
+                userId: decodedToken.id,
+                url: 'nope'
+            }
+
+            await api
+              .post('/api/blogs')
+              .send(newBlog)
+              .expect(401)
+
+            const blogsAtEnd = await helper.blogsInDatabase()
+            expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+        })
     })
 
+    // Tämä testi on rikki. Jostain syystä ajaa status code 500:sta liian monessa
     describe('DELETE-method', () => {
-        test('method returns status code 204 if id is valid', async () => {
+        test('method returns status code 204 if id & info valid', async () => {
             const blogsAtStart = await helper.blogsInDatabase()
             const blogToDelete = blogsAtStart[0]
 
             await api
               .delete(`/api/blogs/${blogToDelete.id}`)
+              .set('Authorization', `bearer ${token}`)
+              .send(decodedToken.id)
               .expect(204)
 
             const blogsAtEnd = await helper.blogsInDatabase()
