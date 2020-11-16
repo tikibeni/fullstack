@@ -1,12 +1,16 @@
 import React from 'react'
 
+// Blogilistan käsittelystä vastaava osa
 const Blogs = ({ blogs }) => {
   return (
-    <ul>
-      {blogs.map(blog => 
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </ul>
+    <div>
+      <h2>Blogs</h2>
+      <ul>
+        {blogs.map(blog => 
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </ul>
+    </div>
   )
 }
 
