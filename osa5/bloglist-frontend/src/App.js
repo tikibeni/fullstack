@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import Blogs from './components/Blogs'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -56,7 +56,7 @@ const App = () => {
       }, 2000)
 
     } catch (exception) {
-      setErrorMessage('wrong username or password')
+      setErrorMessage('Wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -100,12 +100,16 @@ const App = () => {
       }, 5000)
 
     } catch (exception) {
-      setErrorMessage('something went wrong during blog creation, check console.')
+      setErrorMessage('Something went wrong during blog creation - check console')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     }
   }
+
+  // HUOM
+  // REFAKTOROI TÄSTÄ ALASPÄIN OLEVAT FIKSUMMIKSI
+  // HUOM
 
   // Lomake kirjautumista varten
   const loginForm = () => (
@@ -173,26 +177,21 @@ const App = () => {
 
       {user === null ?
         <div>
-          <h1>log in to application</h1>
+          <h1>Log in to application</h1>
           {loginForm()}
         </div>
 
         :
 
         <div>
-          <h1>blogs</h1>
+          <h1>Blogs</h1>
           <p>{user.username} logged in</p> 
-
           <button type="submit" onClick={handleLogout}>logout</button>
 
-          <h2>create blog</h2>
+          <h2>Create blog</h2>
           {blogForm()}
 
-          <ul>
-            {blogs.map(blog => 
-              <Blog key={blog.id} blog={blog} />
-            )}
-          </ul>
+          <Blogs blogs={blogs} />
         </div>
       }
     </div>
