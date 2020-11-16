@@ -3,10 +3,12 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './App.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -47,14 +49,21 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+
+      setSuccessMessage(`Welcome ${user.username}!`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 2000)
+
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     }
   }
 
+  // Käsittelee uloskirjautumisen
   const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
@@ -63,8 +72,13 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setSuccessMessage('Logged out successfully')
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 2000)
   }
 
+  // Käsittelee blogin luontiprosessin
   const handleBlogCreate = async (event) => {
     event.preventDefault()
     try {
@@ -80,6 +94,10 @@ const App = () => {
 
       setBlogs(blogs.concat(blog))
 
+      setSuccessMessage(`Blog '${blog.title}' by ${blog.author} created`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
 
     } catch (exception) {
       setErrorMessage('something went wrong during blog creation, check console.')
@@ -89,6 +107,7 @@ const App = () => {
     }
   }
 
+  // Lomake kirjautumista varten
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -113,6 +132,7 @@ const App = () => {
     </form>
   )
 
+  // Lomake blogin luontia varten
   const blogForm = () => (
     <form onSubmit={handleBlogCreate}>
       <div>
@@ -148,7 +168,8 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} notificationType='error' />
+      <Notification message={successMessage} notificationType='success' />
 
       {user === null ?
         <div>
