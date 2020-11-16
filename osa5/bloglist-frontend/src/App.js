@@ -10,6 +10,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   // Hakee suoraan kaikki blogit kannasta
   useEffect(() => {
@@ -57,6 +60,33 @@ const App = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
     blogService.setToken(null)
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
+  const handleBlogCreate = async (event) => {
+    event.preventDefault()
+    try {
+      const userId = user.id
+      console.log('HANDLING BLOG CREATION: ', user)
+      const blog = await blogService.create({
+        title, author, userId, url,
+      })
+
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+
+      setBlogs(blogs.concat(blog))
+
+
+    } catch (exception) {
+      setErrorMessage('something went wrong during blog creation, check console.')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const loginForm = () => (
@@ -83,6 +113,39 @@ const App = () => {
     </form>
   )
 
+  const blogForm = () => (
+    <form onSubmit={handleBlogCreate}>
+      <div>
+        title:
+        <input
+          type="text"
+          value={title}
+          name="Title"
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
+      <div>
+        author:
+        <input
+          type="text"
+          value={author}
+          name="Author"
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+      </div>
+      <div>
+        url:
+        <input
+          type="text"
+          value={url}
+          name="Url"
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>
+  )
+
   return (
     <div>
       <Notification message={errorMessage} />
@@ -100,6 +163,9 @@ const App = () => {
           <p>{user.username} logged in</p> 
 
           <button type="submit" onClick={handleLogout}>logout</button>
+
+          <h2>create blog</h2>
+          {blogForm()}
 
           <ul>
             {blogs.map(blog => 
