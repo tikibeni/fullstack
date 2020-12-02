@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 import Blogs from './components/Blogs'
-import Togglable from "./components/Togglable"
+import Togglable from './components/Togglable'
 import Logstatus from './components/Logstatus'
 import Notification from './components/Notification'
 
-import BlogForm from "./components/forms/Blog"
-import LoginForm from "./components/forms/Login"
+import BlogForm from './components/forms/Blog'
+import LoginForm from './components/forms/Login'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -27,7 +27,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   // Tarkistaa sivun avaamisen yhteydessä onko käyttäjä jo kirjautunut
@@ -99,6 +99,7 @@ const App = () => {
       })
       .catch(error => {
         setErrorMessage('Something went wrong during blog creation - check console')
+        console.log(error.message)
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
@@ -120,18 +121,19 @@ const App = () => {
       })
       .catch(error => {
         setErrorMessage('Something went wrong during blog updating')
+        console.log(error.message)
         setTimeout(() => {
           setErrorMessage(null)
         },3000)
       })
   }
 
-  const handleBlogDelete = (blogObject) => {  
+  const handleBlogDelete = (blogObject) => {
 
     if (window.confirm(`Delete ${blogObject.title} by ${blogObject.author}?`)) {
       blogService
         .remove(blogObject.id)
-        .then(res => {
+        .then(() => {
           setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
           setSuccessMessage(`Deleted '${blogObject.title}' by '${blogObject.author}'`)
           setTimeout(() => {
@@ -140,6 +142,7 @@ const App = () => {
         })
         .catch(error => {
           setErrorMessage('Something went wrong during deletion')
+          console.log(error.message)
           setTimeout(() => {
             setErrorMessage(null)
           },5000)

@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 
 // Blogilistan käsittelystä vastaava osa
 const Blogs = ({ blogs, currentUser, updateBlog, deleteBlog }) => {
-  
+
   // Järjestää blogilistan tykkäysten mukaan
   blogs.sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
 
   return (
     <div>
       <h2>Blogs</h2>
-          {blogs.map(blog => 
-            <Blog key={blog.id} blog={blog} loggedUser={currentUser} handleLike={updateBlog} handleRemove={deleteBlog} />
-          )}
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} loggedUser={currentUser} handleLike={updateBlog} handleRemove={deleteBlog} />
+      )}
     </div>
   )
 }
@@ -20,8 +20,8 @@ const Blogs = ({ blogs, currentUser, updateBlog, deleteBlog }) => {
 const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
   const [visible, setVisible] = useState(false)
 
-  const hideWhenVisible = { 
-    display: visible ? 'none' : '', 
+  const hideWhenVisible = {
+    display: visible ? 'none' : '',
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
@@ -29,7 +29,7 @@ const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
     marginBottom: 5
   }
 
-  const showWhenVisible = { 
+  const showWhenVisible = {
     display: visible ? '' : 'none',
     paddingTop: 10,
     paddingLeft: 2,
@@ -42,7 +42,7 @@ const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
     setVisible(!visible)
   }
 
-  const incrementLike = (event) => {
+  const incrementLike = () => {
     blog.likes += 1
     handleLike(blog)
   }
@@ -58,18 +58,18 @@ const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
         {blog.title} by {blog.author} <button onClick={toggleVisibility}>show</button>
       </div>
       <div style={showWhenVisible}>
-          <p>{blog.title} by {blog.author} <button onClick={toggleVisibility}>hide</button></p>
-          <p>{blog.url}</p>
-          <p>{blog.likes}<button onClick={incrementLike}>like</button></p>
-          <p>
-            {blog.user.name !== undefined
-                ? blog.user.name
-                : blog.user.username
-            }
-          </p>
-          <p>
-            {blog.user.id === loggedUser.id ? <button onClick={blogRemoval}>remove</button> : <br></br>}
-          </p>
+        <p>{blog.title} by {blog.author} <button onClick={toggleVisibility}>hide</button></p>
+        <p>{blog.url}</p>
+        <p>{blog.likes}<button onClick={incrementLike}>like</button></p>
+        <p>
+          {blog.user.name !== undefined
+            ? blog.user.name
+            : blog.user.username
+          }
+        </p>
+        <p>
+          {blog.user.id === loggedUser.id ? <button onClick={blogRemoval}>remove</button> : <br></br>}
+        </p>
       </div>
     </div>
   )
