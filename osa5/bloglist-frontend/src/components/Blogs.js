@@ -1,8 +1,27 @@
 import React, { useState } from 'react'
 
 // Blogilistan käsittelystä vastaava osa
-const Blogs = ({ blogs, updateBlog }) => {
-  const blogStyle = {
+const Blogs = ({ blogs, currentUser, updateBlog, deleteBlog }) => {
+  
+  // Järjestää blogilistan tykkäysten mukaan
+  blogs.sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+
+  return (
+    <div>
+      <h2>Blogs</h2>
+          {blogs.map(blog => 
+            <Blog key={blog.id} blog={blog} loggedUser={currentUser} handleLike={updateBlog} handleRemove={deleteBlog} />
+          )}
+    </div>
+  )
+}
+
+// Yksittäisen blogin renderöinnistä vastaava osa
+const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
+  const [visible, setVisible] = useState(false)
+
+  const hideWhenVisible = { 
+    display: visible ? 'none' : '', 
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
@@ -10,24 +29,14 @@ const Blogs = ({ blogs, updateBlog }) => {
     marginBottom: 5
   }
 
-  blogs.sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
-
-  return (
-    <div style={blogStyle}>
-      <h2>Blogs</h2>
-          {blogs.map(blog => 
-            <Blog key={blog.id} blog={blog} handleLike={updateBlog} />
-          )}
-    </div>
-  )
-}
-
-// Yksittäisen blogin renderöinnistä vastaava osa
-const Blog = ({ blog, handleLike }) => {
-  const [visible, setVisible] = useState(false)
-
-  const hideWhenVisible = { display: visible ? 'none' : ''}
-  const showWhenVisible = { display: visible ? '' : 'none'}
+  const showWhenVisible = { 
+    display: visible ? '' : 'none',
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -35,8 +44,12 @@ const Blog = ({ blog, handleLike }) => {
 
   const incrementLike = (event) => {
     blog.likes += 1
-    
     handleLike(blog)
+  }
+
+  const blogRemoval = (event) => {
+    event.preventDefault()
+    handleRemove(blog)
   }
 
   return (
@@ -53,7 +66,10 @@ const Blog = ({ blog, handleLike }) => {
                 ? blog.user.name
                 : blog.user.username
             }
-        </p>
+          </p>
+          <p>
+            {blog.user.id === loggedUser.id ? <button onClick={blogRemoval}>remove</button> : <br></br>}
+          </p>
       </div>
     </div>
   )

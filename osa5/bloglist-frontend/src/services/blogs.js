@@ -21,10 +21,6 @@ const create = async newObject => {
   return response.data
 }
 
-// Tarvitsee siis koko alkuperäisobjektin, muutetun kentän, objektin id:n ja userId:n
-// - newobject on samalla alkper objekti ja uusi objekti
-// - userId:n voi kaivaa objektin sisältä kohdasta userid
-// - objektin id luulisi olevan newobjektin sisällä.
 const update = async updatedObject => {
   const config = {
     headers: { Authorization: token }, 
@@ -34,4 +30,13 @@ const update = async updatedObject => {
   return response.data
 }
 
-export default { getAll, create, update, setToken }
+const remove = async objectId => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  const response = await axios.delete(`${baseUrl}/${objectId}`, config)
+  return response.data
+}
+
+export default { getAll, create, update, remove, setToken }

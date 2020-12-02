@@ -107,14 +107,9 @@ const App = () => {
 
   // Käsittelee blogiin liittyvät muutokset ja toimittaa backendille
   const handleBlogUpdate = (blogObject) => {
-    console.log('Frontin blogObject ennen axios: ', blogObject)
-
     blogService
       .update(blogObject)
       .then(returnedBlog => {
-         
-        console.log('Palautettu blogi axiosin jälkeen: ',returnedBlog)
-
         setBlogs(blogs.map(b => b.title !== blogObject.title ? b : returnedBlog))
         setSuccessMessage(
           `Updated blog '${blogObject.title}' likes to ${returnedBlog.likes}`
@@ -129,6 +124,27 @@ const App = () => {
           setErrorMessage(null)
         },3000)
       })
+  }
+
+  const handleBlogDelete = (blogObject) => {  
+
+    if (window.confirm(`Delete ${blogObject.title} by ${blogObject.author}?`)) {
+      blogService
+        .remove(blogObject.id)
+        .then(res => {
+          setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+          setSuccessMessage(`Deleted '${blogObject.title}' by '${blogObject.author}'`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage('Something went wrong during deletion')
+          setTimeout(() => {
+            setErrorMessage(null)
+          },5000)
+        })
+    }
   }
 
   return (
@@ -154,7 +170,7 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={handleBlogCreate} />
           </Togglable>
-          <Blogs blogs={blogs} updateBlog={handleBlogUpdate} />
+          <Blogs blogs={blogs} currentUser={user} updateBlog={handleBlogUpdate} deleteBlog={handleBlogDelete} />
         </div>
       }
 
