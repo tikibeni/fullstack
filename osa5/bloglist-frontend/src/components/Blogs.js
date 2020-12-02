@@ -10,6 +10,8 @@ const Blogs = ({ blogs, updateBlog }) => {
     marginBottom: 5
   }
 
+  blogs.sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+
   return (
     <div style={blogStyle}>
       <h2>Blogs</h2>
