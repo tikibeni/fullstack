@@ -21,7 +21,6 @@ blogsRouter.get('/:id', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
     const body = request.body
-
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
     if (!request.token || !decodedToken.id) {
@@ -53,13 +52,23 @@ blogsRouter.post('/', async (request, response) => {
     }
 })
 
-// Tähän pitäisi päivittää token/user vaativuudet
+// Metodi, joka päivittää tiedot tietokantaan, mikäli formaatti ja token ovat ok.
 blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
 
+    console.log('SERVERIN VASTAANOTTAMA BLOGI: ', body)
+
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const user = await User.findById(body.user.id)
     const blog = {
         title: body.title,
         author: body.author,
+        user: user.id,
         url: body.url,
         likes: body.likes,
     }
@@ -71,7 +80,9 @@ blogsRouter.put('/:id', async (request, response) => {
     if (blog.title === (undefined || '') && blog.url === (undefined || '')) {
         response.status(400).end()
     } else {
-        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog)
+        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new:true})
+        // Jotta frontti osaa näyttää blogin tekijän nimen muutosten jälkeenkin!
+        updatedBlog.user = user
         response.json(updatedBlog.toJSON())
     }
 })
