@@ -105,6 +105,32 @@ const App = () => {
       })
   }
 
+  // Käsittelee blogiin liittyvät muutokset ja toimittaa backendille
+  const handleBlogUpdate = (blogObject) => {
+    console.log('Frontin blogObject ennen axios: ', blogObject)
+
+    blogService
+      .update(blogObject)
+      .then(returnedBlog => {
+         
+        console.log('Palautettu blogi axiosin jälkeen: ',returnedBlog)
+
+        setBlogs(blogs.map(b => b.title !== blogObject.title ? b : returnedBlog))
+        setSuccessMessage(
+          `Updated blog '${blogObject.title}' likes to ${returnedBlog.likes}`
+        )
+        setTimeout(() => {
+          setSuccessMessage(null)
+        },2000)
+      })
+      .catch(error => {
+        setErrorMessage('Something went wrong during blog updating')
+        setTimeout(() => {
+          setErrorMessage(null)
+        },3000)
+      })
+  }
+
   return (
     <div>
       <Notification message={errorMessage} notificationType='error' />
@@ -128,7 +154,7 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={handleBlogCreate} />
           </Togglable>
-          <Blogs blogs={blogs} />
+          <Blogs blogs={blogs} updateBlog={handleBlogUpdate} />
         </div>
       }
 

@@ -21,4 +21,17 @@ const create = async newObject => {
   return response.data
 }
 
-export default { getAll, create, setToken }
+// Tarvitsee siis koko alkuperäisobjektin, muutetun kentän, objektin id:n ja userId:n
+// - newobject on samalla alkper objekti ja uusi objekti
+// - userId:n voi kaivaa objektin sisältä kohdasta userid
+// - objektin id luulisi olevan newobjektin sisällä.
+const update = async updatedObject => {
+  const config = {
+    headers: { Authorization: token }, 
+  }
+
+  const response = await axios.put(`${ baseUrl }/${updatedObject.id}`, updatedObject, config)
+  return response.data
+}
+
+export default { getAll, create, update, setToken }

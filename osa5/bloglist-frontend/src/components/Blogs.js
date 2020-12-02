@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 // Blogilistan käsittelystä vastaava osa
-const Blogs = ({ blogs }) => {
+const Blogs = ({ blogs, updateBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,14 +14,14 @@ const Blogs = ({ blogs }) => {
     <div style={blogStyle}>
       <h2>Blogs</h2>
           {blogs.map(blog => 
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} handleLike={updateBlog} />
           )}
     </div>
   )
 }
 
 // Yksittäisen blogin renderöinnistä vastaava osa
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : ''}
@@ -29,6 +29,12 @@ const Blog = ({ blog }) => {
 
   const toggleVisibility = () => {
     setVisible(!visible)
+  }
+
+  const incrementLike = (event) => {
+    blog.likes += 1
+    
+    handleLike(blog)
   }
 
   return (
@@ -39,7 +45,7 @@ const Blog = ({ blog }) => {
       <div style={showWhenVisible}>
           <p>{blog.title} by {blog.author} <button onClick={toggleVisibility}>hide</button></p>
           <p>{blog.url}</p>
-          <p>{blog.likes}<button>like</button></p>
+          <p>{blog.likes}<button onClick={incrementLike}>like</button></p>
           <p>
             {blog.user.name !== undefined
                 ? blog.user.name
