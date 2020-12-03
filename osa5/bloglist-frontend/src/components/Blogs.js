@@ -4,7 +4,11 @@ import React, { useState } from 'react'
 const Blogs = ({ blogs, currentUser, updateBlog, deleteBlog }) => {
 
   // Järjestää blogilistan tykkäysten mukaan
-  blogs.sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+  // blogs.sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
+
+  // Järjestää blogilistan tykkäysten mukaan:
+  // -HUOM FIKSAA TÄMÄ JOS EI LAITA JÄRKKÄÄN.!
+  blogs = [].slice.call(blogs).sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
 
   return (
     <div>
@@ -54,10 +58,10 @@ const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
 
   return (
     <div>
-      <div style={hideWhenVisible}>
+      <div style={hideWhenVisible} className='blogRender'>
         {blog.title} by {blog.author} <button onClick={toggleVisibility}>show</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='togglableContent'>
         <p>{blog.title} by {blog.author} <button onClick={toggleVisibility}>hide</button></p>
         <p>{blog.url}</p>
         <p>{blog.likes}<button onClick={incrementLike}>like</button></p>
