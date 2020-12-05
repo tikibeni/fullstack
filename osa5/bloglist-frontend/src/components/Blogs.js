@@ -64,7 +64,7 @@ const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
       <div style={showWhenVisible} className='togglableContent'>
         <p>{blog.title} by {blog.author} <button onClick={toggleVisibility}>hide</button></p>
         <p>{blog.url}</p>
-        <p>{blog.likes}<button onClick={incrementLike}>like</button></p>
+        <p>{blog.likes}<button id="like-button" onClick={incrementLike}>like</button></p>
         <p>
           {blog.user.name !== undefined
             ? blog.user.name
@@ -72,7 +72,7 @@ const Blog = ({ blog, loggedUser, handleLike, handleRemove }) => {
           }
         </p>
         <p>
-          {blog.user.id === loggedUser.id ? <button onClick={blogRemoval}>remove</button> : <br></br>}
+          {blog.user.id === loggedUser.id ? <button id ="remove-button" onClick={blogRemoval}>remove</button> : <br></br>}
         </p>
       </div>
     </div>
