@@ -1,4 +1,4 @@
-# Full Stack 2020
+# Full Stack 2020 - 2021
 
 [Osa 0](https://github.com/tikibeni/fullstack/tree/master/osa0)
 
@@ -11,3 +11,5 @@
 [Osa 4](https://github.com/tikibeni/fullstack/tree/master/osa4)
 
 [Osa 5](https://github.com/tikibeni/fullstack/tree/master/osa5)
+
+[Osa 6](https://github.com/tikibeni/fullstack/tree/master/osa6)
