@@ -1,5 +1,6 @@
+let timeoutID = null
+
 const notificationReducer = (state = null, action) => {
-    console.log('ACTIONI KOKONAISUUDESSAAN:', action)
     switch (action.type) {
         case 'SET_NOTIFICATION':
             return action.notification
@@ -19,12 +20,16 @@ export const deleteNotification = () => {
 
 export const createNotification = (content, time) => {
     return async dispatch => {
+        if (timeoutID !== null) {
+            clearTimeout(timeoutID)
+        }
         dispatch({
             type: 'SET_NOTIFICATION',
             notification: content
         })
-        setTimeout(() => {
+        timeoutID = setTimeout(() => {
             dispatch(deleteNotification())
+            timeoutID = null
         }, time * 1000)
     }
 }

@@ -12,7 +12,4 @@ const reducer = combineReducers({
 })
 
 const Store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)))
-
-console.log('Storen tila: ',Store.getState())
-
 export default Store

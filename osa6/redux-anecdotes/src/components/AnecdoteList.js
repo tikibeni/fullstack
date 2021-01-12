@@ -1,7 +1,8 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import { voteAnecdote } from "../reducers/anecdoteReducer"
 import { createNotification } from "../reducers/notificationReducer";
+// Ylläolevat action creatorit eivät sisällä dispatchausta, vaan pelkkä funktio
 
 const _ = require('lodash')
 
@@ -21,24 +22,15 @@ const Anecdote = ({anecdote, handleClick }) => {
 }
 
 // Anekdoottilistan hallinta
-const AnecdoteList = () => {
-    const dispatch = useDispatch()
-    const anecdotes = useSelector(state => {
-        const organizedAnecdotes = _.orderBy(state.anecdotes, 'votes', 'desc')
-        if (state.filter === null) {
-            return organizedAnecdotes
-        }
-        return organizedAnecdotes.filter(anec => (anec.content.trim().toLowerCase().includes(state.filter.trim().toLowerCase())))
-    })
-
+const AnecdoteList = (props) => {
     const handleVote = (anecdote) => {
-        dispatch(voteAnecdote(anecdote))
-        dispatch(createNotification(`you voted '${anecdote.content}'`, 5))
+        props.voteAnecdote(anecdote)
+        props.createNotification(`you voted '${anecdote.content}'`, 5)
     }
 
     return (
         <div>
-            {anecdotes.map(anecdote =>
+            {props.anecdotes.map(anecdote =>
                 <Anecdote
                     key={anecdote.id}
                     anecdote={anecdote}
@@ -51,4 +43,22 @@ const AnecdoteList = () => {
     )
 }
 
-export default AnecdoteList
+const mapStateToProps = (state) => {
+    const organizedAnecdotes = _.orderBy(state.anecdotes, 'votes', 'desc')
+    if (state.filter === null) {
+        return {
+            anecdotes: organizedAnecdotes
+        }
+    }
+    return {
+        anecdotes: organizedAnecdotes.filter(anecdote => (anecdote.content.trim().toLowerCase().includes(state.filter.trim().toLowerCase())))
+    }
+}
+
+const mapDispatchToProps = {
+    voteAnecdote,
+    createNotification
+}
+
+const ConnectedAnecdotes = connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
+export default ConnectedAnecdotes
