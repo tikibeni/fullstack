@@ -1,7 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAnecdote } from "../reducers/anecdoteReducer"
-import { createNotification, deleteNotification } from "../reducers/notificationReducer";
+import { createNotification } from "../reducers/notificationReducer";
+
+const _ = require('lodash')
 
 // Yksittäisanekdootin renderöinti
 const Anecdote = ({anecdote, handleClick }) => {
@@ -22,22 +24,16 @@ const Anecdote = ({anecdote, handleClick }) => {
 const AnecdoteList = () => {
     const dispatch = useDispatch()
     const anecdotes = useSelector(state => {
+        const organizedAnecdotes = _.orderBy(state.anecdotes, 'votes', 'desc')
         if (state.filter === null) {
-            return state.anecdotes
+            return organizedAnecdotes
         }
-        return state.anecdotes.filter(anec => (anec.content.trim().toLowerCase().includes(state.filter.trim().toLowerCase())))
+        return organizedAnecdotes.filter(anec => (anec.content.trim().toLowerCase().includes(state.filter.trim().toLowerCase())))
     })
 
     const handleVote = (anecdote) => {
-        dispatch(voteAnecdote(anecdote.id))
-        handleNotification(anecdote.content)
-    }
-
-    const handleNotification = (content) => {
-        dispatch(createNotification('Voted anecdote: ' + content))
-        setTimeout(() => {
-            dispatch(deleteNotification())
-        }, 5000)
+        dispatch(voteAnecdote(anecdote))
+        dispatch(createNotification(`you voted '${anecdote.content}'`, 5))
     }
 
     return (

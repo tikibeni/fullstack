@@ -17,10 +17,15 @@ export const deleteNotification = () => {
     }
 }
 
-export const createNotification = (content) => {
-    return {
-        type: 'SET_NOTIFICATION',
-        notification: content
+export const createNotification = (content, time) => {
+    return async dispatch => {
+        dispatch({
+            type: 'SET_NOTIFICATION',
+            notification: content
+        })
+        setTimeout(() => {
+            dispatch(deleteNotification())
+        }, time * 1000)
     }
 }
 
