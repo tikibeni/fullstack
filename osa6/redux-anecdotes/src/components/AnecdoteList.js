@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { voteAnecdote } from "../reducers/anecdoteReducer"
 import { createNotification, deleteNotification } from "../reducers/notificationReducer";
 
+// Yksittäisanekdootin renderöinti
 const Anecdote = ({anecdote, handleClick }) => {
     return (
         <div>
@@ -17,13 +18,23 @@ const Anecdote = ({anecdote, handleClick }) => {
     )
 }
 
+// Anekdoottilistan hallinta
 const AnecdoteList = () => {
     const dispatch = useDispatch()
-    const anecdotes = useSelector(state => state.anecdotes)
+    const anecdotes = useSelector(state => {
+        if (state.filter === null) {
+            return state.anecdotes
+        }
+        return state.anecdotes.filter(anec => (anec.content.trim().toLowerCase().includes(state.filter.trim().toLowerCase())))
+    })
 
     const handleVote = (anecdote) => {
         dispatch(voteAnecdote(anecdote.id))
-        dispatch(createNotification('Voted anecdote: ' + anecdote.content))
+        handleNotification(anecdote.content)
+    }
+
+    const handleNotification = (content) => {
+        dispatch(createNotification('Voted anecdote: ' + content))
         setTimeout(() => {
             dispatch(deleteNotification())
         }, 5000)
@@ -35,7 +46,9 @@ const AnecdoteList = () => {
                 <Anecdote
                     key={anecdote.id}
                     anecdote={anecdote}
-                    handleClick={() => handleVote(anecdote)}
+                    handleClick={() =>
+                        handleVote(anecdote)
+                    }
                 />
             )}
         </div>
