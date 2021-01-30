@@ -13,3 +13,5 @@
 [Osa 5](https://github.com/tikibeni/fullstack/tree/master/osa5)
 
 [Osa 6](https://github.com/tikibeni/fullstack/tree/master/osa6)
+
+[Osa 7](https://github.com/tikibeni/fullstack/tree/master/osa7)
