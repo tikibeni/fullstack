@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { createNotification } from "../../reducers/notificationReducer";
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
   const addBlog = (event) => {
     event.preventDefault()
-    createBlog({
+    // Tämä kirjautumistietojen jälkeen kokonaan omaksi.
+    props.appCreateBlog({
       title: title,
       userId: null,
       author: author,
-      url: url
+      url: url,
     })
+    props.createNotification(`Blog '${title}' by ${author} created`, 'success', 5)
 
     setTitle('')
     setAuthor('')
@@ -59,4 +63,12 @@ const BlogForm = ({ createBlog }) => {
   )
 }
 
-export default BlogForm
+const mapDispatchToProps = {
+  // createBlog,
+  createNotification
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(BlogForm)
