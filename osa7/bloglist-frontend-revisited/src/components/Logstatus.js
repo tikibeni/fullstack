@@ -1,15 +1,41 @@
 import React from 'react'
+import { logoutUser } from "../reducers/userReducer";
+import { createNotification } from "../reducers/notificationReducer";
+import { connect } from "react-redux";
+import blogService from "../services/blogs";
 
-const Logstatus = ({ user, handleStatusChange }) => {
+const Logstatus = (props) => {
+  const handleLogout = (event) => {
+      event.preventDefault()
+      window.localStorage.removeItem('loggedUser')
+      blogService.setToken(null)
+      props.logoutUser()
+      props.createNotification('Logged out successfully', 'success', 2)
+  }
+
   return (
     <div>
-      {user.name !== undefined
-        ? <p>{user.name} logged in</p>
-        : <p>{user.username} logged in</p>
+      {props.user.name !== null
+        ? <p>{props.user.name} logged in</p>
+        : <p>{props.user.username} logged in</p>
       }
-      <button type="submit" onClick={handleStatusChange}>logout</button>
+      <button type="submit" onClick={handleLogout}>logout</button>
     </div>
   )
 }
 
-export default Logstatus
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+const mapDispatchToProps = {
+    logoutUser,
+    createNotification
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Logstatus)

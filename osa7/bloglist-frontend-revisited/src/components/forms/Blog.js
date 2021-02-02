@@ -1,26 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { createNotification } from "../../reducers/notificationReducer";
 
 const BlogForm = (props) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
   const addBlog = (event) => {
     event.preventDefault()
-    // Tämä kirjautumistietojen jälkeen kokonaan omaksi.
     props.appCreateBlog({
-      title: title,
-      userId: null,
-      author: author,
-      url: url,
+      title: event.target.title.value,
+      userId: props.user.id,
+      author: event.target.author.value,
+      url: event.target.url.value,
     })
-    props.createNotification(`Blog '${title}' by ${author} created`, 'success', 5)
-
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    props.createNotification(`Blog '${event.target.title.value}' by ${event.target.author.value} created`, 'success', 5)
+    event.target.title.value = ''
+    event.target.author.value = ''
+    event.target.url.value = ''
   }
 
   return (
@@ -29,33 +23,15 @@ const BlogForm = (props) => {
       <form id="blogForm" onSubmit={addBlog}>
         <div>
           title:
-          <input
-            id='title'
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
+          <input name="title"/>
         </div>
         <div>
           author:
-          <input
-            id='author'
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+          <input name="author"/>
         </div>
         <div>
           url:
-          <input
-            id='url'
-            type="text"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
+          <input name="url"/>
         </div>
         <button id="create-button" type="submit">create</button>
       </form>
@@ -63,12 +39,17 @@ const BlogForm = (props) => {
   )
 }
 
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
 const mapDispatchToProps = {
-  // createBlog,
   createNotification
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(BlogForm)

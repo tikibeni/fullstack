@@ -70,7 +70,7 @@ const Blogs = (props) => {
       {props.blogs.map(blog =>
         <Blog key={blog.id}
               blog={blog}
-              loggedUser={props.currentUser}
+              loggedUser={props.user}
               handleLike={handleLike}
               handleRemove={handleRemove}
         />
@@ -81,9 +81,10 @@ const Blogs = (props) => {
 
 const mapStateToProps = (state) => {
     const organizedBlogs = [].slice.call(state.blogs).sort((a,b) => (a.likes > b.likes) ? -1 : ((b.likes > a.likes) ? 1 : 0))
-
+    const user = state.user
     return {
-        blogs: organizedBlogs
+        blogs: organizedBlogs,
+        user: user,
     }
 }
 
