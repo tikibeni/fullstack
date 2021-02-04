@@ -4,8 +4,10 @@ import blogService from "../../services/blogs";
 import { connect } from "react-redux";
 import { loginUser } from "../../reducers/loginReducer";
 import { createNotification } from "../../reducers/notificationReducer";
+import {useHistory} from "react-router-dom";
 
 const LoginForm = (props) => {
+  const history = useHistory()
   const handleLogin = async (event) => {
     event.preventDefault()
     const username = event.target.username.value
@@ -20,7 +22,7 @@ const LoginForm = (props) => {
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
       props.createNotification(`Welcome ${user.username}!`, 'success', 2)
-
+      history.push('/blogs')
     } catch (error) {
       props.createNotification('Wrong username or password', 'error', 5)
     }

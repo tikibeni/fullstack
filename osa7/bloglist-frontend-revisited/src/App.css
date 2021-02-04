@@ -48,6 +48,11 @@
   margin-bottom: 10px;
 }
 
+.menu {
+  background: lightgrey;
+  border-radius: 5px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

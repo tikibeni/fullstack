@@ -1,18 +1,17 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import Notification from './components/Notification'
 import UserProfile from './components/UserProfile'
-import Logstatus from './components/Logstatus'
-import Togglable from './components/Togglable'
+import BlogProfile from './components/BlogProfile'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
+import Menu from './components/Menu'
 import blogService from './services/blogs'
 import BlogForm from './components/forms/Blog'
 import LoginForm from './components/forms/Login'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/userReducer'
 import { loginUser } from './reducers/loginReducer'
-import './App.css'
 import {
   Switch,
   Route,
@@ -21,7 +20,6 @@ import {
 
 const App = (props) => {
   const dispatch = useDispatch()
-  const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -37,41 +35,41 @@ const App = (props) => {
     dispatch(initializeUsers())
   }, [dispatch])
 
-  const handleBlogCreate = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    dispatch(createBlog(blogObject))
-  }
+  const matchUser = useRouteMatch('/users/:id')
+    const user = matchUser
+    ? props.users.find(u => u.id === matchUser.params.id)
+    : null
 
-  const match = useRouteMatch('/users/:id')
-    const user = match
-    ? props.users.find(u => u.id === match.params.id)
+  const matchBlog = useRouteMatch('/blogs/:id')
+    const blog = matchBlog
+    ? props.blogs.find(b => b.id === matchBlog.params.id)
     : null
 
   return (
     <div>
       <Notification />
-      <h1>Blog App</h1>
-      <Switch>
-        {props.user === null ?
-          <LoginForm />
+        {props.user === null
+          ? <LoginForm />
           :
           <div>
-            <Logstatus />
-            <Route path="/users/:id">
-              <UserProfile user={user} />
-            </Route>
-            <Route path="/users">
-              <Users />
-            </Route>
-            <Route path="/blogs">
-              <Togglable buttonLabel="new blog" ref={blogFormRef}>
-                <BlogForm appCreateBlog={handleBlogCreate} />
-              </Togglable>
-              <Blogs />
-            </Route>
+            <Menu />
+            <Switch>
+              <Route path="/users/:id">
+                <UserProfile user={user} />
+              </Route>
+              <Route path="/users">
+                <Users />
+              </Route>
+              <Route path="/blogs/:id">
+                <BlogProfile blog={blog} />
+              </Route>
+              <Route path="/blogs">
+                <BlogForm />
+                <Blogs />
+              </Route>
+            </Switch>
           </div>
         }
-      </Switch>
     </div>
   )
 }
@@ -80,6 +78,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.user,
     users: state.users,
+    blogs: state.blogs,
   }
 }
 
