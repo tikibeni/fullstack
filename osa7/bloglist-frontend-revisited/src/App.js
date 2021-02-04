@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from 'react'
+import { connect, useDispatch } from 'react-redux'
+import Notification from './components/Notification'
+import UserProfile from './components/UserProfile'
+import Logstatus from './components/Logstatus'
+import Togglable from './components/Togglable'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
-import Togglable from './components/Togglable'
-import Logstatus from './components/Logstatus'
-import Notification from './components/Notification'
+import blogService from './services/blogs'
 import BlogForm from './components/forms/Blog'
 import LoginForm from './components/forms/Login'
-import blogService from './services/blogs'
-import { connect, useDispatch } from 'react-redux'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { initializeUsers } from './reducers/userReducer'
 import { loginUser } from './reducers/loginReducer'
 import './App.css'
-
 import {
   Switch,
   Route,
@@ -50,27 +50,36 @@ const App = (props) => {
   return (
     <div>
       <Notification />
-      {props.user === null ?
-        <div>
+      <h1>Blog App</h1>
+      <Switch>
+        {props.user === null ?
           <LoginForm />
-        </div>
-        :
-        <div>
-          <Logstatus />
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm appCreateBlog={handleBlogCreate} />
-          </Togglable>
-          <Blogs />
-          <Users />
-        </div>
-      }
+          :
+          <div>
+            <Logstatus />
+            <Route path="/users/:id">
+              <UserProfile user={user} />
+            </Route>
+            <Route path="/users">
+              <Users />
+            </Route>
+            <Route path="/blogs">
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <BlogForm appCreateBlog={handleBlogCreate} />
+              </Togglable>
+              <Blogs />
+            </Route>
+          </div>
+        }
+      </Switch>
     </div>
   )
 }
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+    user: state.user,
+    users: state.users,
   }
 }
 
