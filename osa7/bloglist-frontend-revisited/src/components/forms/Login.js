@@ -2,7 +2,7 @@ import React from 'react'
 import userService from "../../services/login";
 import blogService from "../../services/blogs";
 import { connect } from "react-redux";
-import { loginUser } from "../../reducers/userReducer";
+import { loginUser } from "../../reducers/loginReducer";
 import { createNotification } from "../../reducers/notificationReducer";
 
 const LoginForm = (props) => {

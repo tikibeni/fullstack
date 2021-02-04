@@ -1,5 +1,5 @@
 import React from 'react'
-import { logoutUser } from "../reducers/userReducer";
+import { logoutUser } from "../reducers/loginReducer";
 import { createNotification } from "../reducers/notificationReducer";
 import { connect } from "react-redux";
 import blogService from "../services/blogs";

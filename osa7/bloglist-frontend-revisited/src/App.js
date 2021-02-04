@@ -1,15 +1,23 @@
-import React, {useEffect, useRef} from 'react'
+import React, { useEffect, useRef } from 'react'
 import Blogs from './components/Blogs'
+import Users from './components/Users'
 import Togglable from './components/Togglable'
 import Logstatus from './components/Logstatus'
 import Notification from './components/Notification'
 import BlogForm from './components/forms/Blog'
 import LoginForm from './components/forms/Login'
 import blogService from './services/blogs'
-import {connect, useDispatch} from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
-import { loginUser } from "./reducers/userReducer";
+import { initializeUsers } from './reducers/userReducer'
+import { loginUser } from './reducers/loginReducer'
 import './App.css'
+
+import {
+  Switch,
+  Route,
+  useRouteMatch,
+} from 'react-router-dom'
 
 const App = (props) => {
   const dispatch = useDispatch()
@@ -26,12 +34,18 @@ const App = (props) => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
   const handleBlogCreate = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     dispatch(createBlog(blogObject))
   }
+
+  const match = useRouteMatch('/users/:id')
+    const user = match
+    ? props.users.find(u => u.id === match.params.id)
+    : null
 
   return (
     <div>
@@ -47,6 +61,7 @@ const App = (props) => {
             <BlogForm appCreateBlog={handleBlogCreate} />
           </Togglable>
           <Blogs />
+          <Users />
         </div>
       }
     </div>

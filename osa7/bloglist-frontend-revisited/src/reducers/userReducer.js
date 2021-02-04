@@ -1,28 +1,20 @@
-const userReducer = (state = null, action) => {
+import userService from './../services/users'
+
+const userReducer = (state=[], action) => {
     switch (action.type) {
-        case 'USER_LOGIN':
-            return action.user
-        case 'USER_LOGOUT':
-            return action.user
+        case 'INIT_USERS':
+            return action.data
         default:
             return state
     }
 }
 
-export const loginUser = (user) => {
+export const initializeUsers = () => {
     return async dispatch => {
+        const users = await userService.getAll()
         dispatch({
-            type: 'USER_LOGIN',
-            user: user
-        })
-    }
-}
-
-export const logoutUser = () => {
-    return async dispatch => {
-        dispatch({
-            type: 'USER_LOGOUT',
-            user: null
+            type: 'INIT_USERS',
+            data: users.data
         })
     }
 }
