@@ -35,12 +35,17 @@ blogsRouter.post('/', async (request, response) => {
         user: user._id,
         url: body.url,
         likes: body.likes,
+        comments: body.comments,
     })
 
     if (blog.likes === undefined) {
         blog.likes = 0
     }
-    
+
+    if (blog.comments === undefined) {
+        blog.comments = []
+    }
+
     if (blog.title === undefined && blog.url === undefined) {
         response.status(400).end()
     } else {
@@ -48,6 +53,26 @@ blogsRouter.post('/', async (request, response) => {
         user.blogs = user.blogs.concat(savedBlog._id)
         await user.save()
 
+        response.json(savedBlog.toJSON())
+    }
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+    const body = request.body
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const comment = body.content
+
+    if (comment === undefined || comment === '') {
+        response.status(400).end()
+    } else {
+        let blog = await Blog.findById(body.blogId)
+        blog.comments = blog.comments.concat(comment)
+        const savedBlog = await blog.save()
         response.json(savedBlog.toJSON())
     }
 })
@@ -68,10 +93,15 @@ blogsRouter.put('/:id', async (request, response) => {
         user: user.id,
         url: body.url,
         likes: body.likes,
+        comments: body.comments,
     }
 
     if (blog.likes === undefined) {
         blog.likes = 0
+    }
+
+    if (blog.comments === undefined) {
+        blog.comments = []
     }
 
     if (blog.title === (undefined || '') && blog.url === (undefined || '')) {
@@ -106,7 +136,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     if (blog.user.toString() !== activeUser._id.toString()) {
         return response.status(401).json({ error: 'unauthorized user' })
     }
-    
+
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
 })
