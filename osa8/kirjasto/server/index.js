@@ -112,18 +112,18 @@ const resolvers = {
         bookCount: () => books.length,
         authorCount: () => authors.length,
         allBooks: (root, args) => {
-            let author = args.author
-            let genre = args.genre
-            console.log('root: ', root)
-            console.log('args:', args)
-            console.log('genre: ', genre)
+            if (args) {
+                if (args.author && args.genre) {
+                    return books.filter(book => book.author === args.author && book.genres.includes(args.genre))
+                }
 
-            if (author !== undefined) {
-                return books.filter(book => book.author === author)
-            }
+                if (args.author) {
+                    return books.filter(book => book.author === args.author)
+                }
 
-            if (genre !== undefined) {
-                // jumi
+                if (args.genre) {
+                    return books.filter(book => book.genres.includes(args.genre))
+                }
             }
 
             return books
