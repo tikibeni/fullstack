@@ -10,7 +10,7 @@ const App = () => {
   const fetchedAuthors = useQuery(ALL_AUTHORS)
   const fetchedBooks = useQuery(ALL_BOOKS)
   const [ createBook ] = useMutation(CREATE_BOOK, {
-      refetchQueries: [ { query: ALL_BOOKS } ],
+      refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ],
       onError: (error) => {
           console.log('error: ', error)
       }

@@ -9,7 +9,6 @@ const AuthorForm = (props) => {
 
     props.handler({ variables: { name, born } })
 
-    setName('')
     setBorn('')
   }
 
@@ -18,10 +17,11 @@ const AuthorForm = (props) => {
       <h3>Set birthyear</h3>
       <div>
         name
-        <input
-          value={name}
-          onChange={({ target }) => setName(target.value)}
-        />
+        <select value={name} onChange={({ target }) => setName(target.value)}>
+          {props.authors.map(author => (
+            <option key={author.id} value={author.name}>{author.name}</option>
+          ))}
+        </select>
       </div>
       <div>
         born
