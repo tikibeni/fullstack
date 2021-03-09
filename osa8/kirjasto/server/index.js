@@ -178,17 +178,42 @@ const resolvers = {
             if (!fetchedAuthor) {
                 const author = new Author({ name: args.author })
                 book.author = author
-                await author.save()
+
+                try {
+                  await author.save()
+                } catch (error) {
+                  throw new UserInputError(error.message, {
+                      invalidArgs: args,
+                  })
+                }
+
             } else {
                 book.author = fetchedAuthor
             }
 
-            return book.save()
+            try {
+              await book.save()
+            } catch (error) {
+                throw new UserInputError(error.message, {
+                    invalidArgs: args,
+                })
+            }
+
+            return book
         },
 
-        addAuthor: (root, args) => {
+        addAuthor: async (root, args) => {
             const author = new Author({ ...args })
-            return author.save()
+
+            try {
+                await author.save()
+            } catch (error) {
+                throw new UserInputError(error.message, {
+                    invalidArgs: args,
+                })
+            }
+
+            return author
         },
 
         editAuthor: async (root, args) => {
@@ -199,7 +224,16 @@ const resolvers = {
             }
 
             author.born = args.setBornTo
-            return author.save()
+
+            try {
+                await author.save()
+            } catch (error) {
+                throw new UserInputError(error.message, {
+                    invalidArgs: args,
+                })
+            }
+
+            return author
         }
     }
 }
