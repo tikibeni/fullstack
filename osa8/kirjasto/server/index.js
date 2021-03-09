@@ -140,17 +140,17 @@ const resolvers = {
     Query: {
         bookCount: () => Book.collection.countDocuments(),
         authorCount: () => Author.collection.countDocuments(),
-        allBooks: (root, args) => {
+        allBooks: async (root, args) => {
             if (args) {
-                /*
                 if (args.author && args.genre) {
-                    return books.filter(book => book.author === args.author && book.genres.includes(args.genre))
+                    const author = await Author.findOne({ name: args.author })
+                    return Book.find({ author: author, genres: { $in: [args.genre] } }).populate('author')
                 }
 
                 if (args.author) {
-                    return Book.find({ author: { $in: [args.author] } }).populate('author')
+                    const author = await Author.findOne({ name: args.author })
+                    return Book.find({ author: author }).populate('author')
                 }
-                 */
 
                 if (args.genre) {
                     return Book.find({ genres: { $in: [args.genre] } }).populate('author')
@@ -163,10 +163,11 @@ const resolvers = {
         allAuthors: () => Author.find({})
     },
     Author: {
-        /*
-        bookCount: (root) => books.filter(book => book.author === root.name).length
-
-         */
+        bookCount: async (root) => {
+            const author = await Author.findOne({ name: root.name })
+            const books =  await Book.find({ author: author })
+            return books.length
+        }
     },
 
     Mutation: {
