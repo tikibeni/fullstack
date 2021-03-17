@@ -17,7 +17,7 @@ const App = () => {
   })
 
   const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ],
+    refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ],
     onError: (error) => {
       console.log('error: ', error)
     }
