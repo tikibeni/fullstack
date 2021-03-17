@@ -33,7 +33,10 @@ const Authors = (props) => {
         </tbody>
       </table>
 
-      <AuthorForm handler={props.authorEdit} authors={props.authors} />
+      {props.token === null
+        ? <p>Login to edit</p>
+        : <AuthorForm handler={props.authorEdit} authors={props.authors} />
+      }
 
     </div>
   )
