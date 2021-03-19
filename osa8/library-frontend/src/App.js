@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -12,7 +12,6 @@ const App = () => {
   const fetchedAuthors = useQuery(ALL_AUTHORS)
   const fetchedBooks = useQuery(ALL_BOOKS)
   const client = useApolloClient()
-
   const [ createBook ] = useMutation(CREATE_BOOK, {
       onError: (error) => {
           console.log('error: ', error)
@@ -28,7 +27,6 @@ const App = () => {
         })
       }
   })
-
   const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ],
     onError: (error) => {
