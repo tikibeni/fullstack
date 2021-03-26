@@ -1,77 +1,61 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
+import BookTable from "./BookTable";
 
 const Books = (props) => {
-  const [filterGenre, setFilterGenre] = useState(null)
   const [genres, setGenres] = useState([])
+  const [filterGenre, setFilterGenre] = useState(null)
 
   useEffect(() => {
-    const test = []
+    const genreCollection = []
     props.books.map(book => (
-      book.genres.map(genre => {
-        if (!test.includes(genre)) test.push(genre)
+      book.genres.forEach(genre => {
+        if (!genreCollection.includes(genre)) genreCollection.push(genre)
       })
     ))
-    setGenres(test)
+    setGenres(genreCollection)
   }, [props.books])
 
   if (!props.show) {
     return null
   }
 
-  const checkGenre = (book) => {
-    if (book.genres.includes(filterGenre) || filterGenre === null) {
-      return (
-        <tr key={book.title}>
-          <td>{book.title}</td>
-          <td>{book.author.name}</td>
-          <td>{book.published}</td>
-        </tr>
-      )
+  const recommendDescription = () => {
+    return `in your favorite genre ${props.userData.me.favoriteGenre}`
+  }
+  
+  const genreDescription = () => {
+    if (filterGenre !== null) {
+      return `in genre ${filterGenre}`
     }
+
+    return null
   }
 
   return (
     <div>
-      <h2>books</h2>
-
-      {filterGenre !== null
-        ? <div>
-            in genre <b>{filterGenre}</b>
-          </div>
-        : null
+      {props.recommend
+        ? <BookTable
+            title="Recommended"
+            description={recommendDescription()}
+            books={props.books}
+            genres={genres}
+            filterGenre={filterGenre}
+            setFilterGenre={setFilterGenre}
+            favoriteGenre={props.userData.me.favoriteGenre}
+            recommendView={true}
+          />
+        : <BookTable
+            title="Books"
+            description={genreDescription()}
+            books={props.books}
+            genres={genres}
+            filterGenre={filterGenre}
+            setFilterGenre={setFilterGenre}
+            recommendView={false}
+          />
       }
-      <table>
-        <tbody>
-        <tr>
-          <th></th>
-          <th>
-            author
-          </th>
-          <th>
-            published
-          </th>
-        </tr>
-        {props.books
-          ? props.books.map(a =>
-              checkGenre(a)
-            )
-           : null
-        }
-        </tbody>
-      </table>
-
-      <div>
-        {genres.length !== 0
-          ? genres.map(genre => (
-              <button key={genre} onClick={() => setFilterGenre(genre)}>{genre}</button>
-            ))
-          : null
-        }
-        <button onClick={() => setFilterGenre(null)}>all genres</button>
-      </div>
-
     </div>
   )
-};
+}
 
 export default Books
