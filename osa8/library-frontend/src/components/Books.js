@@ -3,7 +3,6 @@ import BookTable from "./BookTable";
 
 const Books = (props) => {
   const [genres, setGenres] = useState([])
-  const [filterGenre, setFilterGenre] = useState(null)
 
   useEffect(() => {
     const genreCollection = []
@@ -22,10 +21,10 @@ const Books = (props) => {
   const recommendDescription = () => {
     return `in your favorite genre ${props.userData.me.favoriteGenre}`
   }
-  
+
   const genreDescription = () => {
-    if (filterGenre !== null) {
-      return `in genre ${filterGenre}`
+    if (props.filterGenre !== null) {
+      return `in genre ${props.filterGenre}`
     }
 
     return null
@@ -39,8 +38,8 @@ const Books = (props) => {
             description={recommendDescription()}
             books={props.books}
             genres={genres}
-            filterGenre={filterGenre}
-            setFilterGenre={setFilterGenre}
+            changeGenre={props.changeGenre}
+            setFilterGenre={props.setFilterGenre}
             favoriteGenre={props.userData.me.favoriteGenre}
             recommendView={true}
           />
@@ -49,8 +48,8 @@ const Books = (props) => {
             description={genreDescription()}
             books={props.books}
             genres={genres}
-            filterGenre={filterGenre}
-            setFilterGenre={setFilterGenre}
+            changeGenre={props.changeGenre}
+            setFilterGenre={props.setFilterGenre}
             recommendView={false}
           />
       }

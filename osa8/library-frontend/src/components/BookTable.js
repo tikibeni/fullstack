@@ -1,19 +1,7 @@
 const BookTable = (props) => {
-  const checkRenderConditions = (book) => {
-    // Purkkaviritelmä
-    if (
-      (book.genres.includes(props.filterGenre) && !props.recommendView)       // Filtteri
-      || (props.filterGenre === null && !props.recommendView)                 // Kaikki
-      || (props.recommendView && book.genres.includes(props.favoriteGenre) )  // Recommend-viewi.
-    ) {
-      return (
-        <tr key={book.title}>
-          <td>{book.title}</td>
-          <td>{book.author.name}</td>
-          <td>{book.published}</td>
-        </tr>
-      )
-    }
+  const filterHandler = (genre) => {
+    props.changeGenre({ variables: { genre: genre } })
+    props.setFilterGenre(genre)
   }
 
   return (
@@ -31,7 +19,11 @@ const BookTable = (props) => {
         </tr>
         {props.books
           ? props.books.map(book =>
-              checkRenderConditions(book)
+              <tr key={book.title}>
+                <td>{book.title}</td>
+                <td>{book.author.name}</td>
+                <td>{book.published}</td>
+              </tr>
             )
           : null
         }
@@ -41,9 +33,16 @@ const BookTable = (props) => {
       {!props.recommendView
         ? <div>
           {props.genres.map(genre => (
-            <button key={genre} onClick={() => props.setFilterGenre(genre)}>{genre}</button>
+            <button
+              key={genre}
+              onClick={() => filterHandler(genre)}
+            >
+              {genre}
+            </button>
           ))}
-            <button onClick={() => props.setFilterGenre(null)}>all genres</button>
+            <button onClick={() => filterHandler(null)}>
+              all genres
+            </button>
           </div>
         : null
       }

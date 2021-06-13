@@ -3,7 +3,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from "./components/LoginForm";
-import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+import {useApolloClient, useLazyQuery, useMutation, useQuery} from "@apollo/client";
 import {ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK, EDIT_AUTHOR, LOGIN, ME} from "./gqlqueries";
 
 const App = () => {
@@ -11,24 +11,25 @@ const App = () => {
   const [token, setToken] = useState(null)
   const [page, setPage] = useState('authors')
   const fetchedAuthors = useQuery(ALL_AUTHORS)
-  const fetchedBooks = useQuery(ALL_BOOKS)
+  const [fetchedBooks, setFetchedBooks] = useState([])
+  const [fetchBooks, { loading, data }] = useLazyQuery(ALL_BOOKS)
+  const [filterGenre, setFilterGenre] = useState(null)
   const fetchedUser = useQuery(ME)
   const client = useApolloClient()
 
+  useEffect(() => {
+    if (!loading && data !== undefined) {
+      console.log('AllBooks: ', data.allBooks)
+      setFetchedBooks(data.allBooks)
+    }
+  }, [data, loading])
+
   const [ createBook ] = useMutation(CREATE_BOOK, {
+      refetchQueries: [ { query: ALL_BOOKS } ],
       onError: (error) => {
           console.log('error: ', error)
       },
-      update: (store, response) => {
-        const dataInStore = store.readQuery({ query: ALL_BOOKS })
-        store.writeQuery({
-          query: ALL_BOOKS,
-          data: {
-            ...dataInStore,
-            allBooks: [ ...dataInStore.allBooks, response.data.addBook ]
-          }
-        })
-      }
+      // Read- ja writequery eivät toimineet palauttaessaan nullia.
   })
 
   const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
@@ -53,7 +54,7 @@ const App = () => {
     }
   }, [result.data]) // eslint-disable-line
 
-  if (fetchedAuthors.loading || fetchedBooks.loading) {
+  if (fetchedAuthors.loading || loading) {
       return <div>loading...</div>
   }
 
@@ -66,11 +67,13 @@ const App = () => {
 
   const handleRecommend = () => {
     setShowRecommend(true)
+    fetchBooks({ variables: { genre: fetchedUser.data.me.favoriteGenre} })
     setPage('books')
   }
 
   const handleBooksView = () => {
     setShowRecommend(false)
+    fetchBooks({ variables: { genre: null } })
     setPage('books')
   }
 
@@ -104,7 +107,10 @@ const App = () => {
 
       <Books
         show={page === 'books'}
-        books={fetchedBooks.data.allBooks}
+        books={fetchedBooks}
+        changeGenre={fetchBooks}
+        filterGenre={filterGenre}
+        setFilterGenre={setFilterGenre}
         recommend={showRecommend}
         userData={fetchedUser.data}
       />
