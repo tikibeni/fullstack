@@ -3,8 +3,8 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from "./components/LoginForm";
-import {useApolloClient, useLazyQuery, useMutation, useQuery} from "@apollo/client";
-import {ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK, EDIT_AUTHOR, LOGIN, ME} from "./gqlqueries";
+import {useApolloClient, useLazyQuery, useMutation, useQuery, useSubscription} from "@apollo/client";
+import {ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, CREATE_BOOK, EDIT_AUTHOR, LOGIN, ME} from "./gqlqueries";
 
 const App = () => {
   const [showRecommend, setShowRecommend] = useState(false)
@@ -16,6 +16,13 @@ const App = () => {
   const [filterGenre, setFilterGenre] = useState(null)
   const fetchedUser = useQuery(ME)
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      window.alert(`${addedBook.title} added`)
+    }
+  })
 
   useEffect(() => {
     if (!loading && data !== undefined) {
