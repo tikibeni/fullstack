@@ -1,5 +1,23 @@
 type Result = string
 
+interface RatioValues {
+    height: number,
+    weight: number
+}
+
+const parseBMIArguments = (args: Array<string>): RatioValues => {
+    if (args.length < 4) throw new Error('Not enough args')
+    if (args.length > 4) throw new Error('Too many args')
+
+    if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+        return {
+            height: Number(args[2]),
+            weight: Number(args[3])
+        }
+    }
+    throw new Error('Provided values were not numbers')
+}
+
 const calculateBmi = (height: number, weight: number): Result => {
     const result: number = weight / ((height / 100) * (height / 100))
 
@@ -26,4 +44,9 @@ const calculateBmi = (height: number, weight: number): Result => {
     }
 }
 
-console.log(calculateBmi(180, 74))
+try {
+    const { height, weight } = parseBMIArguments(process.argv)
+    console.log(calculateBmi(height, weight))
+} catch (e) {
+    console.log('Error: ', e.message)
+}
