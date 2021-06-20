@@ -45,8 +45,8 @@ const calculateExercises = (hoursArray: Array<number>, target: number): Exercise
     })
     const average = sum / periodLength
     const success = average >= target
-    let rating: number
-    let ratingDescription: string
+    let rating: number = 0
+    let ratingDescription: string = ""
 
     switch (true) {
         case average > target:
