@@ -1,4 +1,4 @@
-interface ExerciseResult {
+export interface ExerciseResult {
     periodLength: number,
     trainingDays: number,
     success: boolean,
@@ -35,7 +35,7 @@ const parseEXArguments = (args: Array<string>): ExerciseParser => {
     };
 };
 
-const calculateExercises = (hoursArray: Array<number>, target: number): ExerciseResult => {
+export const calculateExercises = (hoursArray: Array<number>, target: number): ExerciseResult => {
     const periodLength: number = hoursArray.length;
     let trainingDays = 0;
     let sum = 0;
