@@ -18,7 +18,7 @@ const parseBMIArguments = (args: Array<string>): RatioValues => {
     throw new Error('Provided values were not numbers')
 }
 
-const calculateBmi = (height: number, weight: number): Result => {
+export const calculateBmi = (height: number, weight: number): Result => {
     const result: number = weight / ((height / 100) * (height / 100))
 
     switch (true) {
