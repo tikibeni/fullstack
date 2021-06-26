@@ -1,7 +1,13 @@
 import React from 'react';
+import { CoursePart } from '../types';
+import Part from './Part';
 
-const Content = ({ name, exercises }: { name: string, exercises: number }) => (
-    <p>{name} {exercises}</p>
-);
+const Content = (props: { parts: CoursePart[] }) => {
+    const { parts } = props
+    const listOfParts = parts.map((part, i) =>
+        <Part key={`part-${i}`} part={part} />
+    )
+    return (<>{listOfParts}</>)
+};
 
 export default Content;

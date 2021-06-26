@@ -1,11 +1,7 @@
 import React from "react";
+import { CoursePart } from '../types';
 
-interface CourseData {
-    name: string,
-    exerciseCount: number
-}
-
-const Total = ({ data }: { data: Array<CourseData> }) => (
+const Total = ({ data }: { data: CoursePart[] }) => (
     <p>
         Number of exercises{" "}
         {data.reduce((carry, part) => carry + part.exerciseCount, 0)}
