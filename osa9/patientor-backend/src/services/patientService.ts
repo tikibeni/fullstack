@@ -1,27 +1,31 @@
 import { v4 as uuid } from 'uuid';
 import patientData from '../../data/patients.json';
 
-import { NewPatientEntry, PatientEntry, NonSensitivePatientEntry } from '../types';
+import { NewPatient, Patient, NonSensitivePatient } from '../types';
 
-const patients: Array<PatientEntry> = patientData;
+const patients: Patient[] = patientData;
 
-const getPatients = (): PatientEntry[] => {
+const getPatients = (): Patient[] => {
     return patients;
 };
 
-const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
-    return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+const getNonSensitive = (): NonSensitivePatient[] => {
+    return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
         id,
         name,
         dateOfBirth,
         gender,
-        occupation
+        occupation,
+        entries
     }));
 };
 
-const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const id: string = uuid() as string;
+const getById = (id: string): Patient | undefined => {
+    return patients.find(patient => patient.id === id);
+};
+
+const addPatient = ( entry: NewPatient ): Patient => {
+    const id: string = uuid();
     const newPatientEntry = {
         id,
         ...entry
@@ -33,6 +37,7 @@ const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
 
 export default {
     getPatients,
-    getNonSensitiveEntries,
+    getNonSensitive,
+    getById,
     addPatient,
 };
