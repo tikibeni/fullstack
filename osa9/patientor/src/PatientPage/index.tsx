@@ -8,7 +8,7 @@ import {apiBaseUrl} from "../constants";
 
 const PatientPage = () => {
     const { id } = useParams<{ id: string }>();
-    const [{ patients }] = useStateValue();
+    const [{ patients, diagnoses }] = useStateValue();
     const [patient, setPatient] = useState<Patient | undefined>(Object.values(patients).find((p: { id: string; }) => p.id === id));
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const PatientPage = () => {
                                 <i>{entry.description}</i>
                                 <ul>
                                     {entry.diagnosisCodes?.map(code =>
-                                        <li key={code}>{code}</li>
+                                        <li key={code}>{code} {Object.values(diagnoses).find((p: { code: string }) => p.code === code)?.name} </li>
                                     )}
                                 </ul>
                             </div>
