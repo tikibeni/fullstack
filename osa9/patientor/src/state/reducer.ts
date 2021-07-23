@@ -36,3 +36,21 @@ export const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+
+export const setPatientList = (payload: Patient[]) => {
+  const action: Action = {
+    type: "SET_PATIENT_LIST",
+    payload
+  };
+
+  return action;
+};
+
+export const addPatient = (payload: Patient) => {
+  const action: Action = {
+    type: "ADD_PATIENT",
+    payload
+  };
+
+  return action;
+};
