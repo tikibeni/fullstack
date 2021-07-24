@@ -1,3 +1,13 @@
+export type SickLeave = {
+  startDate: string,
+  endDate: string
+};
+
+export type Discharge = {
+  date: string,
+  criteria: string,
+};
+
 interface BaseEntry {
   id: string;
   description: string;
@@ -50,5 +60,5 @@ export interface Patient {
   gender: Gender;
   ssn?: string;
   dateOfBirth?: string;
-  entries?: Entry[]
+  entries: Entry[]
 }
