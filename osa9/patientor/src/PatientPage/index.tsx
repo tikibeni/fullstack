@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Container, Icon} from "semantic-ui-react";
+import {Card, Container, Icon} from "semantic-ui-react";
 import {useStateValue} from "../state";
 import {Gender, Patient} from "../types";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import {apiBaseUrl} from "../constants";
+import EntryDetails from "./EntryDetails";
 
 const PatientPage = () => {
     const { id } = useParams<{ id: string }>();
-    const [{ patients, diagnoses }] = useStateValue();
+    const [{ patients }] = useStateValue();
     const [patient, setPatient] = useState<Patient | undefined>(Object.values(patients).find((p: { id: string; }) => p.id === id));
 
     useEffect(() => {
@@ -40,7 +41,7 @@ const PatientPage = () => {
                 : <Icon name="genderless" />
     );
 
-    if (patient?.ssn === undefined) {
+    if (patient === undefined) {
         return (
             <div>
                 Loading...
@@ -60,17 +61,13 @@ const PatientPage = () => {
                 <div>
                     {patient?.entries?.length === 0
                         ? <div>No entries.</div>
-                        : patient?.entries?.map(entry =>
-                            <div key={entry.id}>
-                                {entry.date} &#160;
-                                <i>{entry.description}</i>
-                                <ul>
-                                    {entry.diagnosisCodes?.map(code =>
-                                        <li key={code}>{code} {Object.values(diagnoses).find((p: { code: string }) => p.code === code)?.name} </li>
-                                    )}
-                                </ul>
-                            </div>
-                        )
+                        : <Card.Group itemsPerRow={1}>
+                            {
+                                patient?.entries?.map(entry =>
+                                    <EntryDetails key={entry.id} entry={entry} />
+                                )
+                            }
+                          </Card.Group>
                     }
                 </div>
             </Container>
