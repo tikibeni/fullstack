@@ -1,3 +1,13 @@
+export type SickLeave = {
+    startDate: string,
+    endDate: string
+};
+
+export type Discharge = {
+    date: string,
+    criteria: string,
+};
+
 interface BaseEntry {
     id: string;
     description: string;
@@ -58,3 +68,5 @@ export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
 export type NonSensitivePatient = Omit<Patient, 'ssn'>;
 
 export type NewPatient = Omit<Patient, 'id'>;
+
+export type NewEntry = Omit<Entry, 'id'>;
