@@ -21,3 +21,5 @@
 [Osa 9](https://github.com/tikibeni/fullstack/tree/master/osa9)
 
 [Osa 11](https://github.com/tikibeni/fullstack-part11)
+
+[Osa 12](https://github.com/tikibeni/fullstack-part12)
