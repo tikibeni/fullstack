@@ -1,4 +1,4 @@
-# Full Stack 2020 - 2021
+# Full Stack Open palautusrepo by tikibeni
 
 [Osa 0](https://github.com/tikibeni/fullstack/tree/master/osa0)
 
