@@ -24,4 +24,4 @@
 
 [Osa 12](https://github.com/tikibeni/fullstack-part12)
 
-[Osa 13](https://github.com/tikibeni/fullstack-part13)
+[Osa 13](https://github.com/tikibeni/fullstack-osa13)
