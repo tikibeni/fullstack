@@ -1,4 +1,4 @@
-# Full Stack Open palautusrepo by tikibeni
+# Full Stack Open by tikibeni
 
 [Osa 0](https://github.com/tikibeni/fullstack/tree/master/osa0)
 
